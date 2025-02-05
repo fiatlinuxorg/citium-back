@@ -13,6 +13,8 @@ import router from '@adonisjs/core/services/router'
 // Import controllers
 const AuthController = () => import('#controllers/auth_controller')
 const ConstructionSitesController = () => import('#controllers/construction_sites_controller')
+const NotificationsController = () => import('#controllers/notifications_controller')
+const SubscriptionsController = () => import('#controllers/subscriptions_controller')
 
 // API Routes
 router.post('/register', [AuthController, 'register'])
@@ -40,5 +42,27 @@ router
         router.delete('/:id', [ConstructionSitesController, 'destroy']) // Delete a construction site
       })
       .prefix('/sites') // Prefix for construction sites routes
+
+    /**
+     * Notifications Routes
+     */
+
+    router
+      .group(() => {
+        router.get('/:user_id', [NotificationsController, 'getNotifications']) // List all notifications
+        router.post('/read', [NotificationsController, 'markAsRead']) // Mark notifications as read
+      })
+      .prefix('/notifications') // Prefix for notifications routes
+
+    /**
+     * Subscriptions Routes
+     */
+
+    router
+      .group(() => {
+        router.post('/subscribe', [SubscriptionsController, 'subscribe']) // Subscribe to a construction site
+        router.post('/unsubscribe', [SubscriptionsController, 'unsubscribe']) // Unsubscribe from a construction site
+      })
+      .prefix('/subscriptions') // Prefix for subscriptions
   })
-  .prefix('/api') // Prefix for all API routes
+  .prefix('/api/v1') // Prefix for all API routes
