@@ -1,5 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import ConstructionSite from '../models/construction_site_model.js'
+import app from '@adonisjs/core/services/app'
+import { cuid } from '@adonisjs/core/helpers'
 
 export default class ConstructionSitesController {
   /**
@@ -26,9 +28,26 @@ export default class ConstructionSitesController {
    * @param request: construction site data. List can be found in app/models/construction_site_model.ts
    * @returns the created construction site
    */
-  store({ request }: HttpContext) {
-    let constructionSite = new ConstructionSite(request.all())
-    constructionSite.save()
+  async store({ request }: HttpContext) {
+    const constructionSite = new ConstructionSite(request.all())
+    const image = request.file('image', {
+      size: '2mb',
+      extnames: ['jpg', 'png', 'jpeg'],
+    })
+
+    if (image) {
+      // Save the image to the /storage/uploads/ directory
+      let uniqueName = `${cuid()}.${image.extname}`
+      await image.move(app.makePath('storage/uploads'), {
+        name: uniqueName,
+      })
+
+      // Set the image path in the construction site
+      constructionSite.image_path = uniqueName
+    }
+
+    await constructionSite.save()
+
     return constructionSite
   }
 
