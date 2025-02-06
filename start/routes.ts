@@ -9,10 +9,25 @@
 */
 
 import router from '@adonisjs/core/services/router'
+import { sep, normalize } from 'node:path'
+import app from '@adonisjs/core/services/app'
 
 // Import controllers
 const AuthController = () => import('#controllers/auth_controller')
 const ConstructionSitesController = () => import('#controllers/construction_sites_controller')
+
+const PATH_TRAVERSAL_REGEX = /(?:^|[\\/])\.\.(?:[\\/]|$)/
+router.get('/uploads/*', ({ request, response }) => {
+  const filePath = request.param('*').join(sep)
+  const normalizedPath = normalize(filePath)
+
+  if (PATH_TRAVERSAL_REGEX.test(normalizedPath)) {
+    return response.badRequest('Malformed path')
+  }
+
+  const absolutePath = app.makePath('storage/uploads', normalizedPath)
+  return response.download(absolutePath)
+})
 
 // API Routes
 router.post('/register', [AuthController, 'register'])
@@ -41,4 +56,5 @@ router
       })
       .prefix('/sites') // Prefix for construction sites routes
   })
+
   .prefix('/api') // Prefix for all API routes
