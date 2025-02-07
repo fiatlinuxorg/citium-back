@@ -55,10 +55,54 @@ export default class AuthController {
 
       // Generate token
       const token = jwt.sign({ id: user._id }, env.get('JWT_SECRET'), { expiresIn: '1h' })
+      const jwtRefreshSecret = env.get('JWT_REFRESH_SECRET')
+      if (!jwtRefreshSecret) {
+        return response.status(500).json({ message: 'JWT_REFRESH_SECRET non configurato' })
+      }
+      const refreshToken = jwt.sign({ id: user._id }, jwtRefreshSecret, { expiresIn: '7d' })
 
-      return response.status(200).json({ token })
+      return response
+        .status(200)
+        .cookie('token', token, { httpOnly: true, sameSite: 'strict', secure: true })
+        .cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'strict', secure: true })
+        .json({ message: 'Login effettuato con successo' })
     } catch (error) {
       return response.status(500).json({ message: 'Errore durante il login' })
+    }
+  }
+
+  public async refresh({ request, response }: { request: any; response: any }) {
+    try {
+      const refreshToken = request.cookie('refreshToken')
+      if (!refreshToken) {
+        return response.status(401).json({ message: 'Token mancante' })
+      }
+
+      const jwtRefreshSecret = env.get('JWT_REFRESH_SECRET')
+      if (!jwtRefreshSecret) {
+        return response.status(500).json({ message: 'JWT_REFRESH_SECRET non configurato' })
+      }
+      const decoded = jwt.verify(refreshToken, jwtRefreshSecret)
+      const user = await User.findById((decoded as jwt.JwtPayload).id)
+      if (!user) {
+        return response.status(401).json({ message: 'Utente non trovato' })
+      }
+
+      const token = jwt.sign({ id: user._id }, env.get('JWT_SECRET'), { expiresIn: '1h' })
+      const newRefreshToken = jwt.sign({ id: user._id }, jwtRefreshSecret, { expiresIn: '7d' })
+      console.log('Token aggiornato')
+
+      return response
+        .status(200)
+        .cookie('token', token, { httpOnly: true, sameSite: 'strict', secure: true })
+        .cookie('refreshToken', newRefreshToken, {
+          httpOnly: true,
+          sameSite: 'strict',
+          secure: true,
+        })
+        .json({ message: 'Token aggiornato' })
+    } catch (error) {
+      return response.status(500).json({ message: "Errore durante l'aggiornamento del token" })
     }
   }
 

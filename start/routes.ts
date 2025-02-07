@@ -11,6 +11,7 @@
 import router from '@adonisjs/core/services/router'
 import { sep, normalize } from 'node:path'
 import app from '@adonisjs/core/services/app'
+import { middleware } from './kernel.js'
 
 // Import controllers
 const AuthController = () => import('#controllers/auth_controller')
@@ -37,9 +38,16 @@ router
       return { message: 'Hello world' }
     })
 
+    router
+      .get('/protected', () => {
+        return { message: 'This is a protected route' }
+      })
+      .use(middleware.jwtAuth())
+
     // Auth routes
     router.post('/register', [AuthController, 'register'])
     router.post('/login', [AuthController, 'login'])
+    router.post('/refresh', [AuthController, 'refresh'])
     router.post('/logout', [AuthController, 'logout'])
 
     /**
