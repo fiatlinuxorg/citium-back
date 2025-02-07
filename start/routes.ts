@@ -29,11 +29,6 @@ router.get('/uploads/*', ({ request, response }) => {
   return response.download(absolutePath)
 })
 
-// API Routes
-router.post('/register', [AuthController, 'register'])
-router.post('/login', [AuthController, 'login'])
-router.post('/logout', [AuthController, 'logout'])
-
 // API routes
 router
   .group(() => {
@@ -41,6 +36,11 @@ router
     router.get('/test', () => {
       return { message: 'Hello world' }
     })
+
+    // Auth routes
+    router.post('/register', [AuthController, 'register'])
+    router.post('/login', [AuthController, 'login'])
+    router.post('/logout', [AuthController, 'logout'])
 
     /**
      * Construction Sites Routes
