@@ -3,7 +3,12 @@ import Subscription from '../models/subscription_model.js'
 
 export default class SubscriptionsController {
   public async subscribe({ request }: HttpContext) {
-    let subscription = new Subscription(request.all())
+    // Get user's _id from the JWT token
+    let user = request.user
+    let subscription = new Subscription({
+      user_id: user?._id,
+      construction_site_id: request.body().construction_site_id,
+    })
     subscription.save()
     return subscription
   }
