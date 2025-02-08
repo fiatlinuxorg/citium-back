@@ -30,7 +30,6 @@ export default class AuthController {
 
       return response.status(201).json({ message: 'Utente registrato correttamente' })
     } catch (error) {
-      console.error(error)
       return response.status(500).json({ message: 'Errore durante la registrazione' })
     }
   }
@@ -55,17 +54,26 @@ export default class AuthController {
 
       // Generate token
       const token = jwt.sign({ id: user._id }, env.get('JWT_SECRET'), { expiresIn: '1h' })
+      /*
       const jwtRefreshSecret = env.get('JWT_REFRESH_SECRET')
       if (!jwtRefreshSecret) {
         return response.status(500).json({ message: 'JWT_REFRESH_SECRET non configurato' })
       }
       const refreshToken = jwt.sign({ id: user._id }, jwtRefreshSecret, { expiresIn: '7d' })
-
+      .cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'strict', secure: true })
+      */
       return response
         .status(200)
         .cookie('token', token, { httpOnly: true, sameSite: 'strict', secure: true })
-        .cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'strict', secure: true })
-        .json({ message: 'Login effettuato con successo' })
+        .json({
+          message: 'Login effettuato con successo',
+          user: {
+            _id: user._id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+          },
+        })
     } catch (error) {
       return response.status(500).json({ message: 'Errore durante il login' })
     }
@@ -90,7 +98,6 @@ export default class AuthController {
 
       const token = jwt.sign({ id: user._id }, env.get('JWT_SECRET'), { expiresIn: '1h' })
       const newRefreshToken = jwt.sign({ id: user._id }, jwtRefreshSecret, { expiresIn: '7d' })
-      console.log('Token aggiornato')
 
       return response
         .status(200)
@@ -100,7 +107,7 @@ export default class AuthController {
           sameSite: 'strict',
           secure: true,
         })
-        .json({ message: 'Token aggiornato' })
+        .json({ message: 'Token aggiornato', user })
     } catch (error) {
       return response.status(500).json({ message: "Errore durante l'aggiornamento del token" })
     }
@@ -116,7 +123,6 @@ export default class AuthController {
 
       return response.status(200).json({ message: 'Logout effettuato con successo' })
     } catch (error) {
-      console.error(error)
       return response.status(500).json({ message: 'Errore durante il logout' })
     }
   }

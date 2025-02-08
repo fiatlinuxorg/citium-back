@@ -58,11 +58,11 @@ router
       .group(() => {
         router.get('/', [ConstructionSitesController, 'index']) // List all construction sites
         router.get('/:id', [ConstructionSitesController, 'show']) // Get a specific construction site
-        router.post('/', [ConstructionSitesController, 'store']) // Create a new construction site
-        router.put('/:id', [ConstructionSitesController, 'update']) // Update an existing construction site
-        router.delete('/:id', [ConstructionSitesController, 'destroy']) // Delete a construction site
+        router.post('/', [ConstructionSitesController, 'store']).use(middleware.jwtAuth()) // Create a new construction site
+        router.put('/:id', [ConstructionSitesController, 'update']).use(middleware.jwtAuth()) // Update an existing construction site
+        router.delete('/:id', [ConstructionSitesController, 'destroy']).use(middleware.jwtAuth()) // Delete a construction site
       })
-      .prefix('/sites') // Prefix for construction sites routes
+      .prefix('/sites')
   })
 
   .prefix('/api') // Prefix for all API routes
