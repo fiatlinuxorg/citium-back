@@ -83,12 +83,12 @@ router
 
     router
       .group(() => {
-        router.post('/subscribe', [SubscriptionsController, 'subscribe']) // Subscribe to a construction site
-        router.post('/unsubscribe', [SubscriptionsController, 'unsubscribe']) // Unsubscribe from a construction site
+        router.post('/subscribe', [SubscriptionsController, 'subscribe']).use(middleware.jwtAuth()) // Subscribe to a construction site
+        router
+          .post('/unsubscribe', [SubscriptionsController, 'unsubscribe'])
+          .use(middleware.jwtAuth()) // Unsubscribe from a construction site
       })
       .prefix('/subscriptions') // Prefix for subscriptions
-=======
-      .prefix('/sites')
   })
 
   .prefix('/api') // Prefix for all API routes
