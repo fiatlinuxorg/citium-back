@@ -27,5 +27,15 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+    - run: |
+          echo "TZ=UTC" >> .env
+          echo "PORT=8000" >> .env
+          echo "HOST=localhost" >> .env
+          echo "LOG_LEVEL=info" >> .env
+          echo "NODE_ENV=development" >> .env
+          echo "SESSION_DRIVER=cookie" >> .env
+          echo "MONGO_URI=mongodb://localhost:27017/citium" >> .env
+          echo "JWT_SECRET=$(openssl rand -base64 32)" >> .env
+    - run: node ace generate:key
     - run: npm ci
     - run: node ace test
