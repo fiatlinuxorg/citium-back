@@ -65,4 +65,4 @@ router
       })
       .prefix('/subscriptions') // Prefix for subscriptions
   })
-  .prefix('/api/v1') // Prefix for all API routes
+  .prefix('/api') // Prefix for all API routes
