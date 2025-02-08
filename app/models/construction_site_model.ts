@@ -18,7 +18,7 @@ const constructionSiteSchema = new mongoose.Schema({
   impacts_cycling_lane: { type: Boolean, default: false },
   impacts_public_transport: { type: Boolean, default: false },
   initial_budget: { type: Number, required: true },
-  used_budget: { type: Number, required: true },
+  used_budget: { type: Number },
   size: { type: Number, required: true },
 })
 
