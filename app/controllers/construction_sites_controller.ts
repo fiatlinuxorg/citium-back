@@ -88,8 +88,12 @@ export default class ConstructionSitesController {
    * @param params: id of the construction site
    * @returns the deleted construction site
    */
-  destroy({ params }: HttpContext) {
-    let constructionSite = ConstructionSite.findByIdAndDelete(params.id)
-    return constructionSite
+  async destroy({ params, response }: HttpContext) {
+    try {
+      await ConstructionSite.findByIdAndDelete(params.id)
+      return response.noContent()
+    } catch (error) {
+      return response.notFound()
+    }
   }
 }
