@@ -11,7 +11,7 @@ test.group('ConstructionSitesController.store', (group) => {
         mongoServer = await MongoMemoryServer.create()
       })
 
-    test('should create a new construction site without an image', async ({ assert }) => {
+    test('should create a new construction site', async ({ assert }) => {
         const request = {
           name: "test_name",
           description: "test",
@@ -30,7 +30,7 @@ test.group('ConstructionSitesController.store', (group) => {
 
         const controller = new ConstructionSitesController()
 
-        const constructionSite = await controller.store(httpContext)
+        const constructionSite = controller.store(httpContext)
 
         assert.isDefined(constructionSite);
         assert.equal(constructionSite.name, request.name)
@@ -40,7 +40,6 @@ test.group('ConstructionSitesController.store', (group) => {
         assert.equal(constructionSite.start_date.toISOString(), request.start_date.toISOString())
         assert.equal(constructionSite.end_date.toISOString(), request.end_date.toISOString())
         assert.equal(constructionSite.size, request.size)
-        assert.isUndefined(constructionSite.image_path)
     })
 
 

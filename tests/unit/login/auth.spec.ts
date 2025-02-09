@@ -20,7 +20,7 @@ test.group('Auth', (group) => {
       request: {
         body() {
           return {
-            email: 'test1@test.com',
+            email: 'test@test.com',
             password: 'password',
             firstName: 'Test',
             lastName: 'User',
@@ -57,8 +57,8 @@ test.group('Auth', (group) => {
         status(status: number) {
           return {
             json(data: any) {
-              assert.equal(status, 500)
-              assert.equal(data.message, 'Errore durante la registrazione')
+              assert.equal(status,400)
+              assert.equal(data.message, "L'utente esiste già")
             },
           }
         },
