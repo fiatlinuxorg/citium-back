@@ -27,10 +27,10 @@ export default class ConstructionSitesController {
         is_subscribed: subscribedSites.has(site._id.toString()),
       }))
 
-      return response.ok(enrichedSites)
+      return response.ok({ user, constructionSites: enrichedSites })
     }
     // Se l'utente non è autenticato, restituisci i cantieri senza is_subscribed
-    return response.ok(constructionSites)
+    return response.ok({ user, constructionSites })
   }
 
   /**
@@ -47,7 +47,7 @@ export default class ConstructionSitesController {
    * @param request: construction site data. List can be found in app/models/construction_site_model.ts
    * @returns the created construction site
    */
-  async store({ request }: HttpContext) {
+  async store({ request, response }: HttpContext) {
     const constructionSite = new ConstructionSite(request.all())
     const image = request.file('image', {
       size: '2mb',
@@ -64,10 +64,12 @@ export default class ConstructionSitesController {
       // Set the image path in the construction site
       constructionSite.image_path = uniqueName
     }
-
-    await constructionSite.save()
-
-    return constructionSite
+    try {
+      await constructionSite.save()
+      return response.created(constructionSite)
+    } catch (error) {
+      return response.badRequest("Errore nell'inserimento del cantiere")
+    }
   }
 
   /**
