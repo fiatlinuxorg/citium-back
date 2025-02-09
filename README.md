@@ -7,6 +7,7 @@
 Innovative web platform for monitoring small construction sites in the city of Trento. This repository contains the backend services responsible for authentication, user management, construction site data, and real-time notifications.
 
 ## 🚀 Features
+
 - 🔐 **Authentication & Authorization** – Secure stateful API authentication using MongoDB.
 - 🏗 **Construction Site Management** – CRUD operations for managing construction sites.
 - 🔔 **Real-time Notifications** – Subscription system for users to receive updates on construction sites.
@@ -14,31 +15,39 @@ Innovative web platform for monitoring small construction sites in the city of T
 - 📦 **Scalability** – Built with AdonisJS for a modular and maintainable backend.
 
 ## 🛠️ Tech Stack
+
 - **Framework**: AdonisJS
 - **Database**: MongoDB
 - **Authentication**: Stateful authentication with JWT
 - **Messaging**: WebSockets for real-time notifications
 
 ## 🚀 Getting Started
+
 ### 1️⃣ Prerequisites
+
 Make sure you have the following installed:
+
 - [Node.js](https://nodejs.org/) (>= 16.x)
 - [MongoDB](https://www.mongodb.com/)
 - [NPM](https://www.npmjs.com/)
 
 ### 2️⃣ Installation
+
 ```bash
 git clone https://github.com/fiatlinuxorg/citium.git
 cd citium
 ```
 
 Install dependencies:
+
 ```bash
 npm install
 ```
 
 ### 3️⃣ Environment Setup
+
 Create a `.env` file in the root directory and configure your environment variables:
+
 ```
 TZ=UTC
 PORT=8000
@@ -52,12 +61,15 @@ JWT_SECRET=YOUR_SECRET_KEY
 ```
 
 ### 4️⃣ Run the Backend Server
-development: 
+
+development:
+
 ```bash
 npm run dev
 ```
 
-production: 
+production:
+
 ```bash
 npm run build
 cd build
@@ -68,18 +80,22 @@ node bin/server.js
 The API will be available at `http://localhost:8000`.
 
 ## 📖 API Documentation
+
 API documentation is available via Swagger:
+
 ```
 http://localhost:8000/api/docs
 ```
 
 ## 🛡️ Security Considerations
+
 - **JWT Authentication**: Protecting API endpoints
 - **CORS**: Configured to allow secure cross-origin requests
 
-
 ## 📜 License
+
 This project is licensed under the [MIT License](LICENSE).
 
 ---
-💡 *Building a smarter city, one construction site at a time!*
+
+💡 _Building a smarter city, one construction site at a time!_

@@ -5,31 +5,30 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "main", "CI_CD" ]
+    branches: ['main', 'CI_CD']
   pull_request:
-    branches: [ "main" ]
+    branches: ['main']
   workflow_dispatch:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [ 22.x]
+        node-version: [22.x]
         mongodb-version: [8.0]
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - name: Start MongoDB
-      uses: supercharge/mongodb-github-action@1.12.0
-      with:
-        mongodb-version: ${{ matrix.mongodb-version }}
-    - run: |
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.12.0
+        with:
+          mongodb-version: ${{ matrix.mongodb-version }}
+      - run: |
           echo "TZ=UTC" >> .env
           echo "PORT=8000" >> .env
           echo "HOST=localhost" >> .env
@@ -38,6 +37,6 @@ jobs:
           echo "SESSION_DRIVER=cookie" >> .env
           echo "MONGO_URI=mongodb://localhost:27017/citium" >> .env
           echo "JWT_SECRET=$(openssl rand -base64 32)" >> .env
-    - run: npm ci
-    - run: node ace generate:key
-    - run: node ace test --force-exit
+      - run: npm ci
+      - run: node ace generate:key
+      - run: node ace test --force-exit

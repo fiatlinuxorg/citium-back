@@ -39,7 +39,8 @@ export default class ConstructionSitesController {
    * @returns list with the construction site with the given id
    */
   show({ params }: HttpContext) {
-    // S
+    let constructionSite = ConstructionSite.findById(params.id)
+    return constructionSite
   }
 
   /**
