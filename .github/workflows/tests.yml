@@ -40,4 +40,4 @@ jobs:
           echo "JWT_SECRET=$(openssl rand -base64 32)" >> .env
     - run: npm ci
     - run: node ace generate:key
-    - run: node ace test
+    - run: node ace test --force-exit
