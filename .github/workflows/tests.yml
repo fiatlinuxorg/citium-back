@@ -30,15 +30,7 @@ jobs:
           --health-retries 5
     steps:
     - uses: actions/checkout@v4
-    - name: Wait for MongoDB to be ready
-        run:|
-          for i in {1..30}; do
-            if mongo --eval "print(\"waited for connection\")"; then
-              break
-            fi
-            echo "MongoDB is starting up..."
-            sleep 1
-          done
+    - run: for i in {1..30}; do mongo --eval "print(\"waited for connection\")" && break || { echo "MongoDB is starting up..."; sleep 1; }; done
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
