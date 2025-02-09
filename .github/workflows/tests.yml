@@ -14,14 +14,31 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [ 22.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
     - uses: actions/checkout@v4
+    - name: Wait for MongoDB to be ready
+        run:|
+          for i in {1..30}; do
+            if mongo --eval "print(\"waited for connection\")"; then
+              break
+            fi
+            echo "MongoDB is starting up..."
+            sleep 1
+          done
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
