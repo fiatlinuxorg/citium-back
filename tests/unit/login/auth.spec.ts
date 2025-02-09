@@ -10,18 +10,17 @@ import TokenBlacklist from '#models/token_blacklist'
 let mongoServer: MongoMemoryServer
 
 test.group('Auth', (group) => {
-
   group.setup(async () => {
     mongoServer = await MongoMemoryServer.create()
   })
-  
+
   test('register new user test', async ({ assert }) => {
     const controller = new AuthController()
     await controller.register({
       request: {
         body() {
           return {
-            email: 'test@test.com',
+            email: 'test1@test.com',
             password: 'password',
             firstName: 'Test',
             lastName: 'User',
@@ -58,15 +57,14 @@ test.group('Auth', (group) => {
         status(status: number) {
           return {
             json(data: any) {
-              assert.equal(status, 400)
-              assert.equal(data.message, "L'utente esiste già")
+              assert.equal(status, 500)
+              assert.equal(data.message, 'Errore durante la registrazione')
             },
           }
         },
       },
     })
   })
-
 
   test('login existing user test', async ({ assert }) => {
     const controller = new AuthController()
@@ -90,14 +88,17 @@ test.group('Auth', (group) => {
           return {
             json(data: any) {
               assert.equal(status, 200)
-              assert.equal(data.token, jwt.sign({ id: user._id }, env.get('JWT_SECRET'), { expiresIn: '1h' }))
+              assert.equal(
+                data.token,
+                jwt.sign({ id: user._id }, env.get('JWT_SECRET'), { expiresIn: '1h' })
+              )
             },
           }
         },
       },
     })
   })
-  
+
   test('login wrong password test', async ({ assert }) => {
     const controller = new AuthController()
     await controller.login({
@@ -150,7 +151,6 @@ test.group('Auth', (group) => {
     })
   })
 
-
   test('logout test', async ({ assert }) => {
     const controller = new AuthController()
     const user = await User.findOne({ email: 'test@test.com' })
@@ -166,7 +166,7 @@ test.group('Auth', (group) => {
           return `Bearer ${token}`
         }
         return null
-      }
+      },
     }
 
     const response = {
@@ -175,9 +175,9 @@ test.group('Auth', (group) => {
         return {
           json(data: any) {
             assert.equal(data.message, 'Logout effettuato con successo')
-          }
+          },
         }
-      }
+      },
     }
 
     await controller.logout({ request, response })

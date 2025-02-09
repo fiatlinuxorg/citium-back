@@ -12,9 +12,6 @@ tmp
 # Frontend assets compiled code
 public/assets
 
-# Storage directory
-storage/uploads
-
 # Build tools specific
 npm-debug.log
 yarn-error.log

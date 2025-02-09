@@ -10,12 +10,11 @@ const constructionSiteSchema = new mongoose.Schema({
   number: { type: String, required: true },
   start_date: { type: Date, required: true },
   end_date: { type: Date, required: true },
-  image_path: { type: String },
   extension_to: { type: Date },
-  impacts_road: { type: Boolean, default: false },
-  impacts_sidewalk: { type: Boolean, default: false },
-  impacts_cycling_lane: { type: Boolean, default: false },
-  impacts_public_transport: { type: Boolean, default: false },
+  impacts_road: { type: Boolean, required: true, default: false },
+  impacts_sidewalk: { type: Boolean, required: true, default: false },
+  impacts_cycling_lane: { type: Boolean, required: true, default: false },
+  impacts_public_transport: { type: Boolean, required: true, default: false },
   size: { type: Number, required: true },
 })
 
