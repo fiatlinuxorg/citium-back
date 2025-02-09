@@ -19,6 +19,7 @@ const constructionSiteSchema = new mongoose.Schema({
   impacts_public_transport: { type: Boolean, default: false },
   initial_budget: { type: Number, required: true },
   used_budget: { type: Number },
+  is_subscribed: { type: Boolean, default: false },
   size: { type: Number, required: true },
 })
 

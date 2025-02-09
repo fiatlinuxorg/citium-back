@@ -58,8 +58,8 @@ router
      */
     router
       .group(() => {
-        router.get('/', [ConstructionSitesController, 'index']) // List all construction sites
-        router.get('/:id', [ConstructionSitesController, 'show']) // Get a specific construction site
+        router.get('/', [ConstructionSitesController, 'index']).use(middleware.dashboardView()) // List all construction sites
+        router.get('/:id', [ConstructionSitesController, 'show']).use(middleware.dashboardView()) // Get a specific construction site
         router.post('/', [ConstructionSitesController, 'store']).use(middleware.jwtAuth()) // Create a new construction site
         router.put('/:id', [ConstructionSitesController, 'update']).use(middleware.jwtAuth()) // Update an existing construction site
         router.delete('/:id', [ConstructionSitesController, 'destroy']).use(middleware.jwtAuth()) // Delete a construction site
@@ -83,12 +83,12 @@ router
 
     router
       .group(() => {
-        router.post('/subscribe', [SubscriptionsController, 'subscribe']) // Subscribe to a construction site
-        router.post('/unsubscribe', [SubscriptionsController, 'unsubscribe']) // Unsubscribe from a construction site
+        router.post('/subscribe', [SubscriptionsController, 'subscribe']).use(middleware.jwtAuth()) // Subscribe to a construction site
+        router
+          .delete('/unsubscribe/:id', [SubscriptionsController, 'unsubscribe'])
+          .use(middleware.jwtAuth()) // Unsubscribe from a construction site
       })
       .prefix('/subscriptions') // Prefix for subscriptions
-=======
-      .prefix('/sites')
   })
 
   .prefix('/api') // Prefix for all API routes

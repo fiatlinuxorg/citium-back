@@ -1,5 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import ConstructionSite from '../models/construction_site_model.js'
+import Subscription from '#models/subscription_model'
 import app from '@adonisjs/core/services/app'
 import { cuid } from '@adonisjs/core/helpers'
 
@@ -8,9 +9,28 @@ export default class ConstructionSitesController {
    * Main method for listing all construction sites.
    * @returns list of all construction sites
    */
-  index() {
-    let constructionSites = ConstructionSite.find()
-    return constructionSites
+  async index({ request, response }: HttpContext) {
+    const user = request.user
+    let userId = user?._id
+    // Recupera tutti i cantieri
+    const constructionSites = await ConstructionSite.find()
+    if (userId) {
+      // Recupera le iscrizioni dell'utente
+      const subscriptions = await Subscription.find({ user_id: userId })
+      // Estrai gli ID dei cantieri ai quali è iscritto
+      const subscribedSites = new Set(
+        subscriptions.map((sub) => sub.construction_site_id.toString())
+      )
+      // Aggiungi la proprietà is_subscribed ai cantieri
+      const enrichedSites = constructionSites.map((site) => ({
+        ...site.toObject(),
+        is_subscribed: subscribedSites.has(site._id.toString()),
+      }))
+
+      return response.ok(enrichedSites)
+    }
+    // Se l'utente non è autenticato, restituisci i cantieri senza is_subscribed
+    return response.ok(constructionSites)
   }
 
   /**
@@ -19,8 +39,7 @@ export default class ConstructionSitesController {
    * @returns list with the construction site with the given id
    */
   show({ params }: HttpContext) {
-    let constructionSite = ConstructionSite.findById(params.id)
-    return constructionSite
+    // S
   }
 
   /**
