@@ -42,5 +42,6 @@ router.use([
  * the routes or the routes group.
  */
 export const middleware = router.named({
+  dashboardView: () => import('#middleware/dashboard_view_middleware'),
   jwtAuth: () => import('#middleware/jwt_auth_middleware'),
 })
