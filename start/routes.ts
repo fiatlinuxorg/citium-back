@@ -87,7 +87,6 @@ router
         router.post('/unsubscribe', [SubscriptionsController, 'unsubscribe']) // Unsubscribe from a construction site
       })
       .prefix('/subscriptions') // Prefix for subscriptions
-=======
       .prefix('/sites')
   })
 

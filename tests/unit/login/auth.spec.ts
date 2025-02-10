@@ -78,20 +78,24 @@ test.group('Auth', (group) => {
           return {
             email: 'test@test.com',
             password: 'password',
-            firstName: 'Test',
-            lastName: 'User',
           }
         },
       },
       response: {
         status(status: number) {
           return {
+            cookie(name: string, value: string, options: any) {
+              assert.equal(name, 'token')
+              assert.isDefined(value)
+              assert.isDefined(options)
+              },
             json(data: any) {
               assert.equal(status, 200)
-              assert.equal(
-                data.token,
-                jwt.sign({ id: user._id }, env.get('JWT_SECRET'), { expiresIn: '1h' })
-              )
+              assert.equal(data.message, 'Login effettuato con successo')
+              assert.isDefined(data.user.id)
+              assert.equal(data.user.email, 'test@test.com')
+              assert.equal(data.user.firstName, 'Test')
+              assert.equal(data.user.lastName, 'User')
             },
           }
         },
