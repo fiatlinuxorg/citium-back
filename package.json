@@ -58,6 +58,7 @@
     "@adonisjs/lucid": "^21.3.0",
     "@adonisjs/session": "^7.5.0",
     "@vinejs/vine": "^2.1.0",
+    "adonis-autoswagger": "^3.64.0",
     "bcrypt": "^5.1.1",
     "jsonwebtoken": "^9.0.2",
     "mongodb-memory-server": "^10.1.3",
