@@ -59,7 +59,7 @@ router
     router
       .group(() => {
         router.get('/', [ConstructionSitesController, 'index']).use(middleware.dashboardView()) // List all construction sites
-        router.get('/:id', [ConstructionSitesController, 'show']).use(middleware.dashboardView()) // Get a specific construction site
+        router.get('/:query', [ConstructionSitesController, 'show']).use(middleware.dashboardView()) // Get a specific construction site
         router.post('/', [ConstructionSitesController, 'store']).use(middleware.jwtAuth()) // Create a new construction site
         router.put('/:id', [ConstructionSitesController, 'update']).use(middleware.jwtAuth()) // Update an existing construction site
         router.delete('/:id', [ConstructionSitesController, 'destroy']).use(middleware.jwtAuth()) // Delete a construction site
