@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import ConstructionSite from '../models/construction_site_model.js'
 import Subscription from '#models/subscription_model'
+import Notification from '#models/notification_model'
 import app from '@adonisjs/core/services/app'
 import { cuid } from '@adonisjs/core/helpers'
 
@@ -81,6 +82,16 @@ export default class ConstructionSitesController {
   async update({ params, request, response }: HttpContext) {
     try {
       let constructionSite = await ConstructionSite.findByIdAndUpdate(params.id, request.all())
+      let subscribers = await Subscription.find({ construction_site_id: params.id })
+      // Send a notification to all subscribers
+      subscribers.forEach(async (sub) => {
+        let notification = new Notification({
+          user_id: sub.user_id,
+          construction_site_id: params.id,
+          message: `Il cantiere ${constructionSite?.name} è stato aggiornato`,
+        })
+        await notification.save()
+      })
       return response.ok(constructionSite)
     } catch (error) {
       return response.notFound()
