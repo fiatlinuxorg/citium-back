@@ -39,9 +39,33 @@ export default class ConstructionSitesController {
    * @param params: id of the construction site
    * @returns list with the construction site with the given id
    */
-  show({ params }: HttpContext) {
-    let constructionSite = ConstructionSite.findById(params.id)
-    return constructionSite
+  async show({ request, params, response }: HttpContext) {
+    const user = request.user
+    let userId = user?._id
+    // Recupera tutti i cantieri prendendo la query come parametro sulla via e sul nome LIKE
+    const constructionSites = await ConstructionSite.find({
+      $or: [
+        { street: { $regex: params.query, $options: 'i' } },
+        { name: { $regex: params.query, $options: 'i' } },
+      ],
+    })
+    if (userId) {
+      // Recupera le iscrizioni dell'utente
+      const subscriptions = await Subscription.find({ user_id: userId })
+      // Estrai gli ID dei cantieri ai quali è iscritto
+      const subscribedSites = new Set(
+        subscriptions.map((sub) => sub.construction_site_id.toString())
+      )
+      // Aggiungi la proprietà is_subscribed ai cantieri
+      const enrichedSites = constructionSites.map((site) => ({
+        ...site.toObject(),
+        is_subscribed: subscribedSites.has(site._id.toString()),
+      }))
+
+      return response.ok({ user, constructionSites: enrichedSites })
+    }
+    // Se l'utente non è autenticato, restituisci i cantieri senza is_subscribed
+    return response.ok({ user, constructionSites })
   }
 
   /**
