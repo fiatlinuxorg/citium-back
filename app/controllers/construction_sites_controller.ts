@@ -39,7 +39,8 @@ export default class ConstructionSitesController {
    * @returns list with the construction site with the given id
    */
   show({ params }: HttpContext) {
-    // S
+    let constructionSite = ConstructionSite.findById(params.id)
+    return constructionSite
   }
 
   /**
@@ -77,9 +78,13 @@ export default class ConstructionSitesController {
    * @param params: id of the construction site, request: construction site data to update
    * @returns the updated construction site
    */
-  update({ params, request }: HttpContext) {
-    let constructionSite = ConstructionSite.findByIdAndUpdate(params.id, request.all())
-    return constructionSite
+  async update({ params, request, response }: HttpContext) {
+    try {
+      let constructionSite = await ConstructionSite.findByIdAndUpdate(params.id, request.all())
+      return response.ok(constructionSite)
+    } catch (error) {
+      return response.notFound()
+    }
   }
 
   /**
@@ -87,8 +92,14 @@ export default class ConstructionSitesController {
    * @param params: id of the construction site
    * @returns the deleted construction site
    */
-  destroy({ params }: HttpContext) {
-    let constructionSite = ConstructionSite.findByIdAndDelete(params.id)
-    return constructionSite
+  async destroy({ params, response }: HttpContext) {
+    try {
+      await ConstructionSite.findByIdAndDelete(params.id)
+      // Also delete all subscriptions to this construction site
+      await Subscription.deleteMany({ construction_site_id: params.id })
+      return response.noContent()
+    } catch (error) {
+      return response.notFound()
+    }
   }
 }
