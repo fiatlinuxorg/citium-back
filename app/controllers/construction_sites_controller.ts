@@ -91,6 +91,8 @@ export default class ConstructionSitesController {
   async destroy({ params, response }: HttpContext) {
     try {
       await ConstructionSite.findByIdAndDelete(params.id)
+      // Also delete all subscriptions to this construction site
+      await Subscription.deleteMany({ construction_site_id: params.id })
       return response.noContent()
     } catch (error) {
       return response.notFound()
