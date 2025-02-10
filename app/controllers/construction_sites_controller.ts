@@ -78,9 +78,13 @@ export default class ConstructionSitesController {
    * @param params: id of the construction site, request: construction site data to update
    * @returns the updated construction site
    */
-  update({ params, request }: HttpContext) {
-    let constructionSite = ConstructionSite.findByIdAndUpdate(params.id, request.all())
-    return constructionSite
+  async update({ params, request, response }: HttpContext) {
+    try {
+      let constructionSite = await ConstructionSite.findByIdAndUpdate(params.id, request.all())
+      return response.ok(constructionSite)
+    } catch (error) {
+      return response.notFound()
+    }
   }
 
   /**
