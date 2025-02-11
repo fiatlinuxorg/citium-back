@@ -18,8 +18,7 @@ Innovative web platform for monitoring small construction sites in the city of T
 
 - **Framework**: AdonisJS
 - **Database**: MongoDB
-- **Authentication**: Stateful authentication with JWT
-- **Messaging**: WebSockets for real-time notifications
+- **Authentication**: Stateless authentication with JWT
 
 ## 🚀 Getting Started
 
@@ -27,7 +26,7 @@ Innovative web platform for monitoring small construction sites in the city of T
 
 Make sure you have the following installed:
 
-- [Node.js](https://nodejs.org/) (>= 16.x)
+- [Node.js](https://nodejs.org/) (>= 22.x)
 - [MongoDB](https://www.mongodb.com/)
 - [NPM](https://www.npmjs.com/)
 
@@ -84,7 +83,7 @@ The API will be available at `http://localhost:8000`.
 API documentation is available via Swagger:
 
 ```
-http://localhost:8000/api/docs
+http://localhost:8000/docs
 ```
 
 ## 🛡️ Security Considerations
