@@ -13,5 +13,7 @@ export default class SeedDatabase extends BaseCommand {
     const seeder = new DatabaseSeeder()
     await seeder.run()
     this.logger.success('Database seeded successfully')
+
+    process.exit(0)
   }
 }

@@ -2,6 +2,7 @@ import User from '#models/user_model'
 import ConstructionSite from '#models/construction_site_model'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
+import { Logger } from '@adonisjs/core/logger'
 
 dotenv.config()
 
@@ -16,6 +17,7 @@ export default class DatabaseSeeder {
       password: 'Admin123',
       firstName: 'Admin',
       lastName: 'Citium',
+      role: 'admin',
     })
     await admin.save()
 
@@ -46,5 +48,8 @@ export default class DatabaseSeeder {
       })
       await constructionSite.save()
     }
+
+    // Close the connection
+    mongoose.connection.close()
   }
 }
