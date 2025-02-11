@@ -2,6 +2,8 @@ import User from '#models/user_model'
 import ConstructionSite from '#models/construction_site_model'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
+import bcrypt from 'bcrypt'
+
 
 dotenv.config()
 
@@ -13,7 +15,7 @@ export default class DatabaseSeeder {
     // Create users
     const admin = new User({
       email: 'admin@citium.it',
-      password: 'Admin123',
+      password: bcrypt.hash('Admin123', 10),
       firstName: 'Admin',
       lastName: 'Citium',
       role: 'admin',
@@ -22,7 +24,7 @@ export default class DatabaseSeeder {
 
     const user = new User({
       email: 'mariorossi@mail.com',
-      password: 'Password123',
+      password: bcrypt.hash('Password123', 10),
       firstName: 'Mario',
       lastName: 'Rossi',
     })
