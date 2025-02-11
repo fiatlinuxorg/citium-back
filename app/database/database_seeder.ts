@@ -2,7 +2,6 @@ import User from '#models/user_model'
 import ConstructionSite from '#models/construction_site_model'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
-import { Logger } from '@adonisjs/core/logger'
 
 dotenv.config()
 
