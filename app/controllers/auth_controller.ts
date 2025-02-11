@@ -9,8 +9,13 @@ dotenv.config()
 
 export default class AuthController {
   /**
-   * Register a new user using email and password.
-   * @returns HTTP status code + message
+   * @register
+   * @operationId register
+   * @description Register a new user with email, password, first name and last name
+   * @requestBody { "email" : "mariorossi@mail.com", "password" : "Password123", "firstName" : "Mario", "lastName" : "Rossi" }
+   * @responseBody 201 - { "message" : "Utente registrato correttamente" }
+   * @responseBody 400 - { "message" : "L'utente esiste già" }
+   * @responseBody 500 - { "message" : "Errore durante la registrazione" }
    */
   public async register({ request, response }: { request: any; response: any }) {
     const { email, password, firstName, lastName } = request.body()
@@ -34,8 +39,14 @@ export default class AuthController {
     }
   }
   /**
-   * Login a user using email and password. If the user exists and the password is correct, a JWT token is generated.
-   * @returns HTTP status code + message + JWT token
+   * @login
+   * @opetarionId login
+   * @description Login a user with email and password and set a JWT token in a cookie
+   * @requestBody { "email" : "mariorossi@mail.com", "password" : "Password123" }
+   * @responseBody 200 - { "message" : "Login effettuato con successo", "user" : { "_id" : "string", "email" : "string", "firstName" : "string", "lastName" : "string" } }
+   * @responseBody 400 - { "message" : "Credenziali invalide" }
+   * @responseBody 500 - { "message" : "Errore durante il login" }
+   * @cookie token - JWT token
    */
   public async login({ request, response }: { request: any; response: any }) {
     const { email, password } = request.body()
@@ -112,7 +123,13 @@ export default class AuthController {
       return response.status(500).json({ message: "Errore durante l'aggiornamento del token" })
     }
   }
-
+  /**
+   * @logout
+   * @operationId logout
+   * @description Logout a user and clear the JWT token from the cookie
+   * @responseBody 200 - { "message" : "Logout effettuato con successo" }
+   * @responseBody 500 - { "message" : "Errore durante il logout" }
+   */
   public async logout({ response }: { response: any }) {
     try {
       await response.clearCookie('token')

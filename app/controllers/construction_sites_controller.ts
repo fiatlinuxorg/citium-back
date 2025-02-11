@@ -7,8 +7,10 @@ import { cuid } from '@adonisjs/core/helpers'
 
 export default class ConstructionSitesController {
   /**
-   * Main method for listing all construction sites.
-   * @returns list of all construction sites
+   * @index
+   * @operationId getAllConstructionSites
+   * @description Get all construction sites and the user's subscriptions if authenticated
+   * @responseBody 200 - { "constructionSites" : [ { "_id" : "67aa43801c22906f341e0880", "name" : "Cantiere", "street" : "Via del Brennero", "description" : "Costruzione di un nuovo cantiere", "impacts_road" : "true", "image_path" : "cantiere.png", "is_subscribed" : "true" } ] }
    */
   async index({ request, response }: HttpContext) {
     const user = request.user
@@ -35,9 +37,11 @@ export default class ConstructionSitesController {
   }
 
   /**
-   * Method for showing a specific construction site.
-   * @param params: id of the construction site
-   * @returns list with the construction site with the given id
+   * @show
+   * @operationId getConstructionSites
+   * @description Get construction sites by query and the user's subscriptions if authenticated
+   * @requestParam query - string - Query to search for in the street and name fields
+   * @responseBody 200 - { "constructionSites" : [ { "_id" : "67aa43801c22906f341e0880", "name" : "Cantiere", "street" : "Via del Brennero", "description" : "Costruzione di un nuovo cantiere", "impacts_road" : "true", "image_path" : "cantiere.png", "is_subscribed" : "true" } ] }
    */
   async show({ request, params, response }: HttpContext) {
     const user = request.user
@@ -69,9 +73,13 @@ export default class ConstructionSitesController {
   }
 
   /**
-   * Method for creating a new construction site.
-   * @param request: construction site data. List can be found in app/models/construction_site_model.ts
-   * @returns the created construction site
+   * @store
+   * @operationId createConstructionSite
+   * @description Create a new construction site
+   * @requestBody { "name" : "Cantiere", "street" : "Via del Brennero", "description" : "Costruzione di un nuovo cantiere", "impacts_road" : "true", "image" : "cantiere.png" }
+   * @responseBody 201 - { "name" : "Cantiere", "street" : "Via del Brennero", "description" : "Costruzione di un nuovo cantiere", "impacts_road" : "true", "image_path" : "cantiere.png" }
+   * @responseBody 400 - { "message" : "Errore nell'inserimento del cantiere" }
+   * @responseBody 500 - { "message" : "Errore nell'inserimento del cantiere" }
    */
   async store({ request, response }: HttpContext) {
     const constructionSite = new ConstructionSite(request.all())
@@ -99,9 +107,13 @@ export default class ConstructionSitesController {
   }
 
   /**
-   * Method for updating an existing construction site.
-   * @param params: id of the construction site, request: construction site data to update
-   * @returns the updated construction site
+   * @update
+   * @operationId updateConstructionSite
+   * @description Update a construction site by ID
+   * @requestBody { "name" : "Cantiere", "street" : "Via del Brennero", "description" : "Costruzione di un nuovo cantiere", "impacts_road" : "true", "image" : "cantiere.png" }
+   * @requestParam id - string - ID of the construction site
+   * @responseBody 200 - { "name" : "Cantiere", "street" : "Via del Brennero", "description" : "Costruzione di un nuovo cantiere", "impacts_road" : "true", "image_path" : "cantiere.png" }
+   * @responseBody 404 - { "message" : "Cantiere non trovato" }
    */
   async update({ params, request, response }: HttpContext) {
     try {
@@ -123,9 +135,12 @@ export default class ConstructionSitesController {
   }
 
   /**
-   * Method for deleting a construction site.
-   * @param params: id of the construction site
-   * @returns the deleted construction site
+   * @destroy
+   * @operationId deleteConstructionSite
+   * @description Delete a construction site by ID
+   * @requestParam id - string - ID of the construction site
+   * @responseBody 204 - { "message" : "Cantiere eliminato con successo" }
+   * @responseBody 404 - { "message" : "Cantiere non trovato" }
    */
   async destroy({ params, response }: HttpContext) {
     try {

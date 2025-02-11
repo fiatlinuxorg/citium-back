@@ -52,17 +52,6 @@ router.get('/yaml', async () => {
 // API routes
 router
   .group(() => {
-    // Health check route
-    router.get('/test', () => {
-      return { message: 'Hello world' }
-    })
-
-    router
-      .get('/protected', () => {
-        return { message: 'This is a protected route' }
-      })
-      .use(middleware.jwtAuth())
-
     // Auth routes
     router.post('/register', [AuthController, 'register'])
     router.post('/login', [AuthController, 'login'])
