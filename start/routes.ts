@@ -66,8 +66,8 @@ router
     // Auth routes
     router.post('/register', [AuthController, 'register'])
     router.post('/login', [AuthController, 'login'])
-    router.post('/refresh', [AuthController, 'refresh'])
-    router.post('/logout', [AuthController, 'logout'])
+    //router.post('/refresh', [AuthController, 'refresh'])
+    router.post('/logout', [AuthController, 'logout']).use(middleware.jwtAuth())
 
     /**
      * Construction Sites Routes
@@ -76,7 +76,7 @@ router
     router
       .group(() => {
         router.get('/', [ConstructionSitesController, 'index']).use(middleware.dashboardView()) // List all construction sites
-        router.get('/:id', [ConstructionSitesController, 'show']).use(middleware.dashboardView()) // Get a specific construction site
+        router.get('/:query', [ConstructionSitesController, 'show']).use(middleware.dashboardView()) // Get a specific construction site
         router.post('/', [ConstructionSitesController, 'store']).use(middleware.jwtAuth()) // Create a new construction site
         router.put('/:id', [ConstructionSitesController, 'update']).use(middleware.jwtAuth()) // Update an existing construction site
         router.delete('/:id', [ConstructionSitesController, 'destroy']).use(middleware.jwtAuth()) // Delete a construction site
@@ -89,8 +89,8 @@ router
 
     router
       .group(() => {
-        router.get('/:user_id', [NotificationsController, 'getNotifications']) // List all notifications
-        router.post('/read', [NotificationsController, 'markAsRead']) // Mark notifications as read
+        router.get('/', [NotificationsController, 'getNotifications']).use(middleware.jwtAuth()) // List all notifications
+        router.post('/read', [NotificationsController, 'markAsRead']).use(middleware.jwtAuth()) // Mark notifications as read
       })
       .prefix('/notifications') // Prefix for notifications routes
 

@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import ConstructionSite from '../models/construction_site_model.js'
 import Subscription from '#models/subscription_model'
+import Notification from '#models/notification_model'
 import app from '@adonisjs/core/services/app'
 import { cuid } from '@adonisjs/core/helpers'
 
@@ -38,9 +39,33 @@ export default class ConstructionSitesController {
    * @param params: id of the construction site
    * @returns list with the construction site with the given id
    */
-  show({ params }: HttpContext) {
-    let constructionSite = ConstructionSite.findById(params.id)
-    return constructionSite
+  async show({ request, params, response }: HttpContext) {
+    const user = request.user
+    let userId = user?._id
+    // Recupera tutti i cantieri prendendo la query come parametro sulla via e sul nome LIKE
+    const constructionSites = await ConstructionSite.find({
+      $or: [
+        { street: { $regex: params.query, $options: 'i' } },
+        { name: { $regex: params.query, $options: 'i' } },
+      ],
+    })
+    if (userId) {
+      // Recupera le iscrizioni dell'utente
+      const subscriptions = await Subscription.find({ user_id: userId })
+      // Estrai gli ID dei cantieri ai quali è iscritto
+      const subscribedSites = new Set(
+        subscriptions.map((sub) => sub.construction_site_id.toString())
+      )
+      // Aggiungi la proprietà is_subscribed ai cantieri
+      const enrichedSites = constructionSites.map((site) => ({
+        ...site.toObject(),
+        is_subscribed: subscribedSites.has(site._id.toString()),
+      }))
+
+      return response.ok({ user, constructionSites: enrichedSites })
+    }
+    // Se l'utente non è autenticato, restituisci i cantieri senza is_subscribed
+    return response.ok({ user, constructionSites })
   }
 
   /**
@@ -81,6 +106,16 @@ export default class ConstructionSitesController {
   async update({ params, request, response }: HttpContext) {
     try {
       let constructionSite = await ConstructionSite.findByIdAndUpdate(params.id, request.all())
+      let subscribers = await Subscription.find({ construction_site_id: params.id })
+      // Send a notification to all subscribers
+      subscribers.forEach(async (sub) => {
+        let notification = new Notification({
+          user_id: sub.user_id,
+          construction_site_id: params.id,
+          message: `Il cantiere ${constructionSite?.name} è stato aggiornato`,
+        })
+        await notification.save()
+      })
       return response.ok(constructionSite)
     } catch (error) {
       return response.notFound()
