@@ -63,7 +63,9 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb-memory-server": "^10.1.3",
     "mongoose": "^8.8.1",
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "^0.2.2",
+    "supertest": "^7.0.0",
+    "volkswagen2": "file:../volkswagen2"
   },
   "hotHook": {
     "boundaries": [
