@@ -8,7 +8,7 @@ import { defineConfig } from '@adonisjs/cors'
  */
 const corsConfig = defineConfig({
   enabled: true,
-  origin: ['citium.fiatlinux.it', 'http://localhost:5173'],
+  origin: ['https://citium.fiatlinux.it', 'http://localhost:5173'],
   methods: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE'],
   headers: true,
   exposeHeaders: [],
