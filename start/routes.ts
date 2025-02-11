@@ -12,6 +12,8 @@ import router from '@adonisjs/core/services/router'
 import { sep, normalize } from 'node:path'
 import app from '@adonisjs/core/services/app'
 import { middleware } from './kernel.js'
+import AutoSwagger from 'adonis-autoswagger'
+import swagger from '#config/swagger'
 
 // Import controllers
 const AuthController = () => import('#controllers/auth_controller')
@@ -32,20 +34,24 @@ router.get('/uploads/*', ({ request, response }) => {
   return response.download(absolutePath)
 })
 
+router.get('/swagger', async () => {
+  return AutoSwagger.default.docs(router.toJSON(), swagger);
+})
+
+// Renders Swagger-UI and passes YAML-output of /swagger
+router.get('/docs', async () => {
+  return AutoSwagger.default.ui('/swagger', swagger)
+  // return AutoSwagger.default.scalar("/swagger"); to use Scalar instead
+  // return AutoSwagger.default.rapidoc("/swagger", "view"); to use RapiDoc instead (pass "view" default, or "read" to change the render-style)
+})
+
+router.get('/yaml', async () => {
+  return AutoSwagger.default.jsonToYaml(router.toJSON())
+})
+
 // API routes
 router
   .group(() => {
-    // Health check route
-    router.get('/test', () => {
-      return { message: 'Hello world' }
-    })
-
-    router
-      .get('/protected', () => {
-        return { message: 'This is a protected route' }
-      })
-      .use(middleware.jwtAuth())
-
     // Auth routes
     router.post('/register', [AuthController, 'register'])
     router.post('/login', [AuthController, 'login'])
