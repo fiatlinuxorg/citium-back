@@ -113,14 +113,9 @@ export default class AuthController {
     }
   }
 
-  public async logout({ request, response }: { request: any; response: any }) {
+  public async logout({ response }: { response: any }) {
     try {
-      const token = request.header('Authorization').replace('Bearer ', '')
-
-      // Aggiungi il token alla blacklist
-      const blacklistedToken = new TokenBlacklist({ token })
-      await blacklistedToken.save()
-
+      await response.clearCookie('token')
       return response.status(200).json({ message: 'Logout effettuato con successo' })
     } catch (error) {
       return response.status(500).json({ message: 'Errore durante il logout' })
