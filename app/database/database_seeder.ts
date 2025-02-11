@@ -1,5 +1,11 @@
 import User from '#models/user_model'
 import ConstructionSite from '#models/construction_site_model'
+import mongoose from 'mongoose'
+import dotenv from 'dotenv'
+
+dotenv.config()
+
+mongoose.connect(process.env.MONGO_URI || '') as mongoose.ConnectOptions
 
 // Seed the database with some data
 export default class DatabaseSeeder {
@@ -20,7 +26,6 @@ export default class DatabaseSeeder {
       lastName: 'Rossi',
     })
     await user.save()
-
     // Create construction sites
     for (let i = 0; i < 10; i++) {
       const constructionSite = new ConstructionSite({
