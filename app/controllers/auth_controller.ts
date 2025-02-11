@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken'
 import User from '#models/user_model'
-import TokenBlacklist from '#models/token_blacklist'
 import dotenv from 'dotenv'
 import bcrypt from 'bcrypt'
 import env from '#start/env'
