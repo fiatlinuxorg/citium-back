@@ -1,0 +1,148 @@
+openapi: 3.0.0
+info:
+  title: Citium
+  description: Citium's backend api
+  version: 1.0.0
+servers:
+  - url: "https://localhost:8000/api"
+  - description: "Localhost"
+paths:
+  /test:
+    get:
+      summary: Test API
+      responses:
+        "200":
+          description: Success
+  /protected:
+    get:
+      summary: Protected API
+      security:
+        - jwtAuth: []
+      responses:
+        "200":
+          description: Success
+  /register:
+    post:
+      summary: Register a new user
+      responses:
+        "201":
+          description: User registered
+  /login:
+    post:
+      summary: User login
+      responses:
+        "200":
+          description: Login successful
+  /refresh:
+    post:
+      summary: Refresh authentication token
+      responses:
+        "200":
+          description: Token refreshed
+  /logout:
+    post:
+      summary: User logout
+      responses:
+        "200":
+          description: Logout successful
+  /sites:
+    get:
+      summary: Get all construction sites
+      security:
+        - dashboardView: []
+      responses:
+        "200":
+          description: List of construction sites
+    post:
+      summary: Create a new construction site
+      security:
+        - jwtAuth: []
+      responses:
+        "201":
+          description: Construction site created
+  /sites/{id}:
+    get:
+      summary: Get details of a construction site
+      security:
+        - dashboardView: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Construction site details
+    put:
+      summary: Update a construction site
+      security:
+        - jwtAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Construction site updated
+    delete:
+      summary: Delete a construction site
+      security:
+        - jwtAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Construction site deleted
+  /notifications/{user_id}:
+    get:
+      summary: Get user notifications
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of notifications
+  /notifications/read:
+    post:
+      summary: Mark notifications as read
+      responses:
+        "200":
+          description: Notifications marked as read
+  /subscriptions/subscribe:
+    post:
+      summary: Subscribe to notifications
+      security:
+        - jwtAuth: []
+      responses:
+        "200":
+          description: Subscribed successfully
+  /subscriptions/unsubscribe/{id}:
+    delete:
+      summary: Unsubscribe from notifications
+      security:
+        - jwtAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Unsubscribed successfully
+components:
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
