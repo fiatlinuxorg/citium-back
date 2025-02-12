@@ -64,6 +64,7 @@ JWT_SECRET=YOUR_SECRET_KEY
 development:
 
 ```bash
+node ace seed:database
 npm run dev
 ```
 
@@ -71,6 +72,7 @@ production:
 
 ```bash
 npm run build
+node ace seed:database
 cd build
 npm ci --omit="dev"
 node bin/server.js
